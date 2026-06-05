@@ -1,18 +1,34 @@
-name: Build Docker Image
+name: Docker Hub CI
 
 on:
   push:
     branches:
       - main
-      
+
 jobs:
 
-  build:
+  docker:
+
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Code
+
+      - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Build Docker Image
-        run: docker build -t myimage:v1 .
+      - name: Login DockerHub
+        uses: docker/login-action@v3
+
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build Image
+
+        run: |
+          docker build -t dheerajkapuganti/github-actions-demo:v1 .
+
+      - name: Push Image
+
+        run: |
+          docker push dheerajkapuganti/github-actions-demo:v1
